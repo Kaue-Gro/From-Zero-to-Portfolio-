@@ -380,6 +380,19 @@ function switchSkillView(view){
   }
 }
 
+function enviarEmail(){
+  var nome = document.querySelector('input[placeholder="Seu nome"]').value;
+  var assunto = document.querySelector('input[placeholder="Sobre o que você quer falar?"]').value;
+  var mensagem = document.querySelector('textarea').value;
+  if(!nome || !assunto || !mensagem){
+    alert('Por favor preencha todos os campos!');
+    return;
+  }
+  var corpo = 'Nome: ' + nome + '%0A%0AMensagem:%0A' + encodeURIComponent(mensagem);
+  var link = 'mailto:kauehenriquegro14@gmail.com?subject=' + encodeURIComponent(assunto) + '&body=' + corpo;
+  window.location.href = link;
+}
+
 function calcMesesSupporte(){
   const inicio = new Date(2026, 3, 24); // 24 de abril de 2026
   const hoje = new Date();
