@@ -382,15 +382,39 @@ function switchSkillView(view){
 
 function enviarEmail(){
   var nome = document.querySelector('input[placeholder="Seu nome"]').value;
+  var email = document.querySelector('input[placeholder="seu@email.com"]').value;
   var assunto = document.querySelector('input[placeholder="Sobre o que você quer falar?"]').value;
   var mensagem = document.querySelector('textarea').value;
-  if(!nome || !assunto || !mensagem){
+  if(!nome || !email || !assunto || !mensagem){
     alert('Por favor preencha todos os campos!');
     return;
   }
-  var corpo = 'Nome: ' + nome + '%0A%0AMensagem:%0A' + encodeURIComponent(mensagem);
-  var link = 'mailto:kauehenriquegro14@gmail.com?subject=' + encodeURIComponent(assunto) + '&body=' + corpo;
-  window.location.href = link;
+  var btn = document.querySelector('.form-box .btn-primary');
+  btn.textContent = 'Enviando...';
+  btn.disabled = true;
+  fetch('https://formspree.io/f/mnjrnzvg', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+    body: JSON.stringify({name: nome, email: email, subject: assunto, message: mensagem})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if(data.ok){
+      btn.textContent = '✅ Mensagem enviada!';
+      document.querySelector('input[placeholder="Seu nome"]').value = '';
+      document.querySelector('input[placeholder="seu@email.com"]').value = '';
+      document.querySelector('input[placeholder="Sobre o que você quer falar?"]').value = '';
+      document.querySelector('textarea').value = '';
+      setTimeout(function(){ btn.textContent = 'Enviar Mensagem'; btn.disabled = false; }, 3000);
+    } else {
+      btn.textContent = 'Erro, tente novamente';
+      btn.disabled = false;
+    }
+  })
+  .catch(function(){
+    btn.textContent = 'Erro, tente novamente';
+    btn.disabled = false;
+  });
 }
 
 function calcMesesSupporte(){
